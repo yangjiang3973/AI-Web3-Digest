@@ -1,0 +1,59 @@
+{
+  "name": "twitter-web3-summary",
+  "version": "1.0.0",
+  "description": "Use AI to give you a daily Web3 summary of your twitter timeline",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix && prettier --write .",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": "prettier --write"
+  },
+  "keywords": [
+    "web3",
+    "grok-ai",
+    "twitter",
+    "api",
+    "following",
+    "typescript"
+  ],
+  "author": "Yang Jiang",
+  "license": "MIT",
+  "dependencies": {
+    "@ai-sdk/xai": "^2.0.24",
+    "@types/node": "^24.6.1",
+    "ai": "^5.0.65",
+    "axios": "^1.12.2",
+    "dotenv": "^17.2.3",
+    "marked": "^16.4.0",
+    "node-cron": "^4.2.1",
+    "resend": "^6.1.2",
+    "typescript": "^5.9.3",
+    "winston": "^3.18.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.37.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.4",
+    "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
+    "typescript-eslint": "^8.46.1"
+  }
+}
