@@ -54,7 +54,7 @@ async function main() {
 }
 
 cron.schedule(
-    '21 16 * * *',
+    '00 10 * * *',
     async () => {
         console.log('Running the bot at 10:00 AM every day');
         await main();
