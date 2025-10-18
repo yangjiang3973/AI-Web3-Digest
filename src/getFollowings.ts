@@ -62,6 +62,9 @@ export default async function getFollowings(pageSize = 200) {
                         timeout: 30000,
                     }
                 );
+                console.log(
+                    `Fetched ${data.followings.length} followings from API.`
+                );
                 if (data.code !== 0 || data.status !== 'success') {
                     throw new AppError(
                         `Twitter API response error: ${data.msg || 'Twitter API error'}`,

@@ -2,12 +2,22 @@ import fs from 'fs/promises';
 import { marked } from 'marked';
 import { Resend } from 'resend';
 import dotenv from 'dotenv';
-import { emailList } from './utils';
 import AppError from './error';
 dotenv.config();
 if (!process.env.RESEND_KEY) {
     throw new Error('RESEND_KEY is not found!');
 }
+if (!process.env.EMAIL_LIST) {
+    throw new Error('EMAIL_LIST is not found!');
+}
+
+const emailList = process.env.EMAIL_LIST.split(',').map((email) =>
+    email.trim()
+);
+if (emailList.length === 0) {
+    throw new Error('EMAIL_LIST is empty!');
+}
+
 const resend = new Resend(process.env.RESEND_KEY);
 
 export default async function sendEmail(filePath: string) {

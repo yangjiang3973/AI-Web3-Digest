@@ -6,7 +6,8 @@ type ErrorType =
     | 'TWITTER_AUTH_ERROR'
     | 'GROK_INVALID_TYPE'
     | 'GROK_API_ERROR'
-    | 'EMAIL_ERROR';
+    | 'EMAIL_ERROR'
+    | 'NO_FOLLOWINGS';
 
 export default class AppError extends Error {
     type: ErrorType;

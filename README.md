@@ -36,11 +36,11 @@ Copy and configure environment:
 
 `cp .env.example .env`
 
-Edit `.env` with your keys from TwitterAPI.io, xAI Grok, Resend, and your Twitter username.
-
-Edit `utils.ts` to add/edit email recipients and customize AI system prompts (e.g., more focus on Solana memes).
+Edit `.env` with your keys from TwitterAPI.io, xAI Grok, Resend, your Twitter username and email list of recipients.
 
 Edit cron schedule in `src/index.ts` if needed. Default time to send report is 10 a.m. (UTC+8).
+
+(Optional) Edit `utils.ts` to customize AI system prompts (e.g., more focus on Solana memes).
 
 Build and run:
 
@@ -58,10 +58,10 @@ See `.env.example` for full details. Key vars:
 - `USERNAME`: Your X (Twitter) username.
 - `GROK_KEY`: xAI Grok API key (console.x.ai).
 - `RESEND_KEY`: Resend API key (resend.com).
+- `EMAIL_LIST`: Comma-separated list of email addresses to send the digest to.
 
 See `utils.ts` to customize. Key vars:
 
-- `emailList` to add/edit recipients.
 - `systemPrompt` for different focuses (e.g., NFTs, DeFi).
 
 **Security Note**: Never commit `.env` (already in .gitignore).
