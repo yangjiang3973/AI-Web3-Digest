@@ -13,6 +13,9 @@ async function main() {
     try {
         // Fetch all followings tweets
         const followings = await getFollowings();
+        if (followings.length === 0) {
+            throw new AppError('No followings found!', 'NO_FOLLOWINGS');
+        }
         for (const f of followings) {
             const tweets = await getRecentTweets(f.userName);
             console.log(`Fetched ${tweets.length} tweets from ${f.userName}`);
@@ -51,7 +54,7 @@ async function main() {
 }
 
 cron.schedule(
-    '0 10 * * *',
+    '21 16 * * *',
     async () => {
         console.log('Running the bot at 10:00 AM every day');
         await main();

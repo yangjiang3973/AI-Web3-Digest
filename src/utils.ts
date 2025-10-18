@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'node:url';
 import AppError from './error';
 
 export const GET_FOLLOWINGS =
@@ -11,6 +12,8 @@ export function sleep(time: number) {
 }
 
 export async function backupToFile(content: string, type: 'json' | 'md') {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
     const date = new Date();
     const dateString = date.toISOString().split('T')[0];
     const fileName = `${dateString}.${type}`;
@@ -33,11 +36,6 @@ export async function backupToFile(content: string, type: 'json' | 'md') {
             );
     }
 }
-
-// TODO: add email recipients here
-export const emailList = [
-    // 'abc@gmail.com'
-];
 
 export const systemPrompt = `
 You are Web3Daily, a concise and objective intelligence analyst specializing in cryptocurrency, arbitrage, blockchain, DeFi, NFTs, and meme coins. Your role is to process a daily feed of tweets from followed web3 accounts and generate a structured report.
