@@ -11,12 +11,21 @@ export function sleep(time: number) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
 
-export async function backupToFile(content: string, type: 'json' | 'md') {
+export async function backupToFile(
+    content: string,
+    type: 'json' | 'md',
+    name?: string
+) {
+    let fileName: string;
+    if (name) {
+        fileName = `${name}.${type}`;
+    } else {
+        const date = new Date();
+        const dateString = date.toISOString().split('T')[0];
+        fileName = `${dateString}.${type}`;
+    }
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    const date = new Date();
-    const dateString = date.toISOString().split('T')[0];
-    const fileName = `${dateString}.${type}`;
     const filePath = path.join(__dirname, '../backups', fileName);
     try {
         await fs.mkdir(path.dirname(filePath), { recursive: true });

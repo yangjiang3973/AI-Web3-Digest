@@ -7,7 +7,8 @@ type ErrorType =
     | 'GROK_INVALID_TYPE'
     | 'GROK_API_ERROR'
     | 'EMAIL_ERROR'
-    | 'NO_FOLLOWINGS';
+    | 'NO_FOLLOWINGS'
+    | 'NO_CACHED_FOLLOWINGS';
 
 export default class AppError extends Error {
     type: ErrorType;
