@@ -1,5 +1,8 @@
 import axios, { AxiosError } from 'axios';
-import { GET_FOLLOWINGS, sleep } from './utils';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'node:url';
+import { backupToFile, GET_FOLLOWINGS, sleep } from './utils';
 import dotenv from 'dotenv';
 import AppError from './error';
 
@@ -59,7 +62,7 @@ export default async function getFollowings(pageSize = 200) {
                     {
                         headers: { 'X-API-Key': API_KEY! },
                         params,
-                        timeout: 30000,
+                        timeout: 10000,
                     }
                 );
                 console.log(
@@ -70,6 +73,8 @@ export default async function getFollowings(pageSize = 200) {
                         `Twitter API response error: ${data.msg || 'Twitter API error'}`,
                         'TWITTER_API_ERROR'
                     );
+                } else if (data.followings.length === 0) {
+                    throw new AppError('No followings found!', 'NO_FOLLOWINGS');
                 }
 
                 // Extract followings and metadata
@@ -90,7 +95,12 @@ export default async function getFollowings(pageSize = 200) {
                     console.log(
                         `Got ${allFollowings.length} followings totally.`
                     );
-                    console.log('Reached end of followings list');
+                    // update cached followings.json file
+                    await backupToFile(
+                        JSON.stringify(allFollowings, null, 2),
+                        'json',
+                        'followings'
+                    );
                     return allFollowings;
                 }
 
@@ -113,16 +123,42 @@ export default async function getFollowings(pageSize = 200) {
                     } else {
                         console.error(`Axios error: ${error.message}`);
                     }
+                } else if (error instanceof AppError) {
+                    if (error.type === 'NO_FOLLOWINGS') {
+                        console.error(
+                            'TwitterAPI error or the user has no followings.'
+                        );
+                        await sleep(2000 * retryCount);
+                    }
                 }
                 retryCount++;
-                if (retryCount === maxRetries) {
-                    console.log(
-                        `Failed to fetch followings after ${maxRetries} attempts`
-                    );
-                    throw new AppError(
-                        `Failed to fetch followings after ${maxRetries} attempts`,
-                        'TWITTER_API_ERROR'
-                    );
+
+                if (retryCount >= maxRetries) {
+                    // read cache from local followings.json file (cache with graceful degradation)
+                    try {
+                        const __filename = fileURLToPath(import.meta.url);
+                        const __dirname = path.dirname(__filename);
+                        const filePath = path.join(
+                            __dirname,
+                            '../backups/followings.json'
+                        );
+                        const cached = await fs.readFile(filePath, 'utf-8');
+                        const cachedFollowings = JSON.parse(
+                            cached
+                        ) as Following[];
+                        if (cachedFollowings.length === 0) {
+                            throw new AppError(
+                                'No cached followings found!',
+                                'NO_CACHED_FOLLOWINGS'
+                            );
+                        }
+                        return cachedFollowings;
+                    } catch (error) {
+                        throw new AppError(
+                            'No cached followings found!',
+                            'NO_CACHED_FOLLOWINGS'
+                        );
+                    }
                 }
             }
         }

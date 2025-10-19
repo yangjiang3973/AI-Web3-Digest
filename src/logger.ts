@@ -9,6 +9,7 @@ const consoleFormat = format.printf(
     }
 );
 
+// TODO: add file transport for error logs
 const logger = createLogger({
     level: process.env.LOG_LEVEL ?? 'info',
     format: format.combine(

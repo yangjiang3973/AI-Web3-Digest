@@ -48,7 +48,7 @@ export default async function getRecentTweets(userName: string) {
                 const { data } = await axios.get<GetPostsResponse>(GET_POSTS, {
                     headers: { 'X-API-Key': API_KEY! },
                     params,
-                    timeout: 30000,
+                    timeout: 5000,
                 });
                 if (data.code !== 0 || data.status !== 'success') {
                     throw new AppError(
@@ -59,6 +59,11 @@ export default async function getRecentTweets(userName: string) {
                 const currentPageTweets = data.data.tweets || [];
                 const hasNextPage = data.has_next_page;
                 cursor = data.next_cursor || null;
+
+                // TODO: retry if currentPageTweets is empty
+                console.log(
+                    `Fetched ${currentPageTweets.length} tweets from ${userName}`
+                );
 
                 //  Only add tweets from the last 24 hours to recentTweets.
                 for (const tweet of currentPageTweets) {
@@ -114,16 +119,16 @@ export default async function getRecentTweets(userName: string) {
                     }
                 }
                 retryCount++;
-                if (retryCount === maxRetries) {
+                if (retryCount >= maxRetries) {
                     console.log(
                         `Failed to fetch tweets after ${maxRetries} attempts`
                     );
-                    throw new AppError(
-                        `Failed to fetch tweets after ${maxRetries} attempts`,
-                        'TWITTER_API_ERROR'
-                    );
+                    // throw new AppError(
+                    //     `Failed to fetch tweets after ${maxRetries} attempts`,
+                    //     'TWITTER_API_ERROR'
+                    // );
+                    return recentTweets;
                 }
-                return recentTweets;
             }
         }
     }
